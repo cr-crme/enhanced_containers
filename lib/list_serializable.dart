@@ -1,4 +1,4 @@
-import '../exceptions.dart';
+import 'exceptions.dart';
 import 'item_serializable.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].
