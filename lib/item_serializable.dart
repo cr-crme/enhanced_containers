@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:nanoid/nanoid.dart';
 
+/// The base class for the items contained in all the custom containers.
+///
+/// Written by: @pariterre and @Guibi1
 abstract class ItemSerializable {
   /// Creates an [ItemSerializable] with the provided [id], or a randomly generated one.
   ItemSerializable({String? id}) : id = id ?? nanoid();
