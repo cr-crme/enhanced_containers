@@ -5,12 +5,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'exceptions.dart';
 import 'item_serializable.dart';
 import 'list_provided.dart';
+import 'database_list_provided.dart';
 
 /// A [ListProvided] that automagically saves all of its into Firebase's Realtime Database, and notifies of changes made in real time.
 ///
 /// Written by: @Guibi1
-abstract class ListFirebase<T> extends ListProvided<T> {
-  ListFirebase({
+abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
+  /// Creates a [FirebaseListProvided] with the specified data path and ids path.
+  FirebaseListProvided({
     required this.availableIdsPath,
     required this.dataPath,
   }) : super() {
@@ -47,13 +49,6 @@ abstract class ListFirebase<T> extends ListProvided<T> {
     });
   }
 
-  /// You can't use this function with [ListFirebase], as it already saves its content in the cloud automagically.
-  @override
-  void deserialize(Map<String, dynamic> map) {
-    throw const ShouldNotCall(
-        "You should not use this function with ListFirebase.");
-  }
-
   /// Adds an item to the Realtime Database.
   ///
   /// Note that [notify] has no effect here and should not be used.
@@ -76,7 +71,7 @@ abstract class ListFirebase<T> extends ListProvided<T> {
     _dataRef.child((item as ItemSerializable).id).set(item.serialize());
   }
 
-  /// You can't not use this function with [ListFirebase] in case the ids of the provided values dont match.
+  /// You can't not use this function with [FirebaseListProvided] in case the ids of the provided values dont match.
   /// Use the function [replace] intead.
   @override
   operator []=(value, T item) {
