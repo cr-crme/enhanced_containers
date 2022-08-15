@@ -30,7 +30,7 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
   /// Deserializes a map of items with the help of [deserializeItem].
   void deserialize(Map<String, dynamic> map) {
     _items.clear();
-    map['items']!.forEach((key, element) {
+    map.forEach((key, element) {
       _items[key] = deserializeItem(element);
     });
   }
