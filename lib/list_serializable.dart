@@ -91,6 +91,17 @@ abstract class ListSerializable<T> extends Iterable<T> {
     return _items.indexWhere(test, start);
   }
 
+  /// Re
+  ///
+  List<T> get orderedByTime {
+    final orderedMessages = toList(growable: false);
+    orderedMessages.sort((a, b) {
+      return (a as ItemSerializable).creationTime -
+          (b as ItemSerializable).creationTime;
+    });
+    return orderedMessages;
+  }
+
   /// Returns the index of [value] using different methods depending of its type.
   int _getIndex(value) {
     if (value is int) {
