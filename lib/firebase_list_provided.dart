@@ -22,10 +22,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
       // Get the new enterprise's data
       _dataRef.child(id).get().then((data) {
         // Add it to the list and notify
-        super.add(
-            deserializeItem((data.value! as Map)
-                .map((key, value) => MapEntry(key.toString(), value))),
-            notify: true);
+        super.add(deserializeItem(data.value), notify: true);
       });
 
       // Listen to data changes

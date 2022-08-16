@@ -11,7 +11,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
   ListSerializable();
 
   /// Creates a [ListSerializable] from a map of serialized items.
-  ListSerializable.fromSerialized(Map<String, dynamic> map) {
+  ListSerializable.fromSerialized(map) {
     deserialize(map);
   }
 
@@ -28,7 +28,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
   T deserializeItem(data);
 
   /// Deserializes a map of items with the help of [deserializeItem].
-  void deserialize(Map<String, dynamic> map) {
+  void deserialize(map) {
     _items.clear();
     for (var element in map.values) {
       _items.add(deserializeItem(element));

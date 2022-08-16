@@ -9,7 +9,7 @@ abstract class ItemSerializable {
   ItemSerializable({String? id}) : id = id ?? nanoid();
 
   /// Creates an [ItemSerializable] from a map of serialized items.
-  ItemSerializable.fromSerialized(Map<String, dynamic> map)
+  ItemSerializable.fromSerialized(map)
       : id = map['id'] ?? nanoid();
 
   /// Must be overriten to serialise additionnal information.
@@ -24,7 +24,7 @@ abstract class ItemSerializable {
   }
 
   /// Deserializes the current object
-  ItemSerializable deserializeItem(Map<String, dynamic> map);
+  ItemSerializable deserializeItem(map);
 
   /// The global id of each instances.
   final String id;
