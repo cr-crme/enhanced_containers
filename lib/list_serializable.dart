@@ -1,5 +1,5 @@
-import 'exceptions.dart';
-import 'item_serializable.dart';
+import './exceptions.dart';
+import './item_serializable.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].
 ///
@@ -89,17 +89,6 @@ abstract class ListSerializable<T> extends Iterable<T> {
   /// the index of `o` is returned.
   int indexWhere(bool Function(T element) test, [int start = 0]) {
     return _items.indexWhere(test, start);
-  }
-
-  /// Re
-  ///
-  List<T> get orderedByTime {
-    final orderedMessages = toList(growable: false);
-    orderedMessages.sort((first, second) {
-      return (first as ItemSerializable).creationTime -
-          (second as ItemSerializable).creationTime;
-    });
-    return orderedMessages;
   }
 
   /// Returns the index of [value] using different methods depending of its type.
