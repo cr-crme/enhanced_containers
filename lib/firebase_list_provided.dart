@@ -13,9 +13,10 @@ import 'database_list_provided.dart';
 abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
   FirebaseListProvided({
-    required this.availableIdsPath,
-    required this.dataPath,
-  }) : super() {
+    String pathToAvailableDataIds,
+    required this.pathToData,
+  }) : _pathToAvailableDataIds = pathToAvailableDataIds ?? dataPath + "-ids",
+  super() {
     // Listen to added ids
     _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
       String id = event.snapshot.key!;
@@ -108,14 +109,15 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   }
 
   /// The path to the list of available ids inside the database.
-  final String availableIdsPath;
+  String _pathToAvailableDataIds;
+  String get pathToAvailableDataIds => _pathToAvailableDataIds;
 
   /// The path to the stored data inside the database.
-  final String dataPath;
+  final String pathToData;
 
   final Map<String, StreamSubscription<DatabaseEvent>> _dataSubscriptions = {};
 
   DatabaseReference get _availableIdsRef =>
-      FirebaseDatabase.instance.ref(availableIdsPath);
-  DatabaseReference get _dataRef => FirebaseDatabase.instance.ref(dataPath);
+      FirebaseDatabase.instance.ref(_pathToAvailableDataIds);
+  DatabaseReference get _dataRef => FirebaseDatabase.instance.ref(pathToData);
 }
