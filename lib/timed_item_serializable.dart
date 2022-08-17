@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import './item_serializable.dart';
 
 /// The base class for the timable items contained in all the custom containers.

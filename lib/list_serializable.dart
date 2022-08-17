@@ -1,6 +1,5 @@
 import './exceptions.dart';
 import './item_serializable.dart';
-import './timed_item_serializable.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].
 ///
@@ -90,23 +89,6 @@ abstract class ListSerializable<T> extends Iterable<T> {
   /// the index of `o` is returned.
   int indexWhere(bool Function(T element) test, [int start = 0]) {
     return _items.indexWhere(test, start);
-  }
-
-  /// Reorder by time. Throws
-  ///
-  List<T> get sortByCreationTime {
-    final orderedMessages = toList(growable: false);
-    try {
-      orderedMessages.sort((first, second) {
-        return (first as TimedItemSerializable).creationTimeStamp -
-            (second as TimedItemSerializable).creationTimeStamp;
-      });
-    } catch (e) {
-      throw TypeException(
-          'The list should be created with TimedItemSerializable compatible items');
-    }
-
-    return orderedMessages;
   }
 
   /// Returns the index of [value] using different methods depending of its type.
