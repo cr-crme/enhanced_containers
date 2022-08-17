@@ -6,8 +6,10 @@ import 'package:nanoid/nanoid.dart';
 /// Written by: @pariterre and @Guibi1
 abstract class ItemSerializable {
   /// Creates an [ItemSerializable] with the provided [id], or a randomly generated one.
-  ItemSerializable({required String? id, required int? creationTime})
-      : id = id ?? nanoid(),
+  ItemSerializable({
+    String? id,
+    int? creationTime,
+  })  : id = id ?? nanoid(),
         creationTime = creationTime ?? DateTime.now().microsecondsSinceEpoch;
 
   /// Creates an [ItemSerializable] from a map of serialized items.
