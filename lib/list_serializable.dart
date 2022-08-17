@@ -1,5 +1,6 @@
-import 'exceptions.dart';
-import 'item_serializable.dart';
+import './exceptions.dart';
+import './item_serializable.dart';
+import './creation_time_item_serializable.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].
 ///
@@ -91,17 +92,6 @@ abstract class ListSerializable<T> extends Iterable<T> {
     return _items.indexWhere(test, start);
   }
 
-  /// Re
-  ///
-  List<T> get orderedByTime {
-    final orderedMessages = toList(growable: false);
-    orderedMessages.sort((first, second) {
-      return (first as ItemSerializable).creationTime -
-          (second as ItemSerializable).creationTime;
-    });
-    return orderedMessages;
-  }
-
   /// Returns the index of [value] using different methods depending of its type.
   int _getIndex(value) {
     if (value is int) {
@@ -121,4 +111,32 @@ abstract class ListSerializable<T> extends Iterable<T> {
 
   @override
   Iterator<T> get iterator => _items.iterator;
+}
+
+/// Provides convenient functions if the list is time dependent, that is
+/// made from [CreationTimeItemSerializable] items.
+mixin CreationTimedItems<T> on ListSerializable<T> {
+  /// Returns a sorted list reorder by time from the oldest to the earliest.
+  ///
+  /// The order is reversed if [reversed] is true.
+  List<T> toListByTime({reversed = false}) {
+    final orderedMessages = toList(growable: false);
+    try {
+      orderedMessages.sort(reversed
+          ? (first, second) {
+              return (first as CreationTimeItemSerializable).creationTimeStamp -
+                  (second as CreationTimeItemSerializable).creationTimeStamp;
+            }
+          : (first, second) {
+              return (second as CreationTimeItemSerializable)
+                      .creationTimeStamp -
+                  (first as CreationTimeItemSerializable).creationTimeStamp;
+            });
+    } catch (_) {
+      TypeException(
+          'The list should be made from TimedItemSerializable items to use '
+          'sortByCreationTime.');
+    }
+    return orderedMessages;
+  }
 }
