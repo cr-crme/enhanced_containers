@@ -95,9 +95,9 @@ abstract class ListSerializable<T> extends Iterable<T> {
   ///
   List<T> get orderedByTime {
     final orderedMessages = toList(growable: false);
-    orderedMessages.sort((a, b) {
-      return (a as ItemSerializable).creationTime -
-          (b as ItemSerializable).creationTime;
+    orderedMessages.sort((first, second) {
+      return (first as ItemSerializable).creationTime -
+          (second as ItemSerializable).creationTime;
     });
     return orderedMessages;
   }
