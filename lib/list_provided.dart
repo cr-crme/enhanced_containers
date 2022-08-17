@@ -10,7 +10,7 @@ abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
   ListProvided() : super();
 
   /// Creates a [ListProvided] from a map of serialized items.
-  ListProvided.fromSerialized(Map<String, dynamic> map)
+  ListProvided.fromSerialized(map)
       : super.fromSerialized(map);
 
   @override
