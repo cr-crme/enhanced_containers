@@ -13,11 +13,17 @@ import 'database_list_provided.dart';
 abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
   FirebaseListProvided({
-    required this.availableIdsPath,
-    required this.dataPath,
-  }) : super() {
+    String? pathToAvailableDataIds,
+    required this.pathToData,
+  })  : _pathToAvailableDataIds = pathToAvailableDataIds ?? "$pathToData-ids",
+        super() {
+    _listenToDatabase();
+  }
+
+  void _listenToDatabase() {
     // Listen to added ids
-    _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
+    _availableDataIdsAddedSubscription =
+        _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
       String id = event.snapshot.key!;
       // Get the new enterprise's data
       _dataRef.child(id).get().then((data) {
@@ -38,7 +44,8 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
     });
 
     // Listen to removed ids
-    _availableIdsRef.onChildRemoved.listen((DatabaseEvent event) {
+    _availableDataIdsRemovedSubscription =
+        _availableIdsRef.onChildRemoved.listen((DatabaseEvent event) {
       // Stop listening to data changes
       _dataSubscriptions.remove(event.snapshot.key!)?.cancel();
       // Remove the enterprise from the list and notify
@@ -105,14 +112,28 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   }
 
   /// The path to the list of available ids inside the database.
-  final String availableIdsPath;
+  String _pathToAvailableDataIds;
+  String get pathToAvailableDataIds => _pathToAvailableDataIds;
+  set pathToAvailableDataIds(String newPath) {
+    _availableDataIdsAddedSubscription.cancel();
+    _availableDataIdsRemovedSubscription.cancel();
+    _dataSubscriptions.forEach((id, sub) => sub.cancel());
+
+    super.clear();
+
+    _pathToAvailableDataIds = newPath;
+    _listenToDatabase();
+  }
 
   /// The path to the stored data inside the database.
-  final String dataPath;
+  final String pathToData;
+
+  late StreamSubscription<DatabaseEvent> _availableDataIdsAddedSubscription;
+  late StreamSubscription<DatabaseEvent> _availableDataIdsRemovedSubscription;
 
   final Map<String, StreamSubscription<DatabaseEvent>> _dataSubscriptions = {};
 
   DatabaseReference get _availableIdsRef =>
-      FirebaseDatabase.instance.ref(availableIdsPath);
-  DatabaseReference get _dataRef => FirebaseDatabase.instance.ref(dataPath);
+      FirebaseDatabase.instance.ref(_pathToAvailableDataIds);
+  DatabaseReference get _dataRef => FirebaseDatabase.instance.ref(pathToData);
 }
