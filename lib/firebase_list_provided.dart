@@ -15,7 +15,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   FirebaseListProvided({
     String? pathToAvailableDataIds,
     required this.pathToData,
-  })  : _pathToAvailableDataIds = pathToAvailableDataIds ?? "$pathToData-ids",
+  })  : _pathToAvailableDataIds = pathToAvailableDataIds ?? '$pathToData-ids',
         super() {
     _listenToDatabase();
   }
@@ -58,7 +58,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void add(T item, {bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
 
     _dataRef.child((item as ItemSerializable).id).set(item.serialize());
     _availableIdsRef.child(item.id).set(true);
@@ -70,7 +70,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void replace(T item, {bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
 
     _dataRef.child((item as ItemSerializable).id).set(item.serialize());
   }
@@ -80,7 +80,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   @override
   operator []=(value, T item) {
     throw const ShouldNotCall(
-        "You should not use this operator. Use the function replace instead.");
+        'You should not use this operator. Use the function replace instead.');
   }
 
   /// Removes an item from the Realtime Database.
@@ -88,7 +88,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void remove(value, {bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
 
     _availableIdsRef.child((this[value] as ItemSerializable).id).remove();
     _dataRef.child((this[value] as ItemSerializable).id).remove();
@@ -100,10 +100,10 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void clear({bool confirm = false, bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
     if (!confirm) {
       throw const ShouldNotCall(
-          "You almost cleared the entire database ! Set the parameter confirm to true if that was really your intention.");
+          'You almost cleared the entire database ! Set the parameter confirm to true if that was really your intention.');
     }
 
     for (final item in this) {

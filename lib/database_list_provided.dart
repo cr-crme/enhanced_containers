@@ -9,6 +9,6 @@ abstract class DatabaseListProvided<T> extends ListProvided<T> {
   @override
   void deserialize(map) {
     throw const ShouldNotCall(
-        "You should not use this function with a Database List Provided.");
+        'You should not use this function with a Database List Provided.');
   }
 }
