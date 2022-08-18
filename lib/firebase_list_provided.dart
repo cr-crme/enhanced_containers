@@ -25,7 +25,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
     _availableDataIdsAddedSubscription =
         _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
       String id = event.snapshot.key!;
-      // Get the new enterprise's data
+      // Get the new element data
       _dataRef.child(id).get().then((data) {
         // Add it to the list and notify
         super.add(deserializeItem(data.value), notify: true);
@@ -38,7 +38,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
         var map = (this[id] as ItemSerializable).serialize();
         map[event.snapshot.key!] = event.snapshot.value;
 
-        // Replace the enterprise in the list and notify
+        // Replace the element in the list and notify
         super.replace(deserializeItem(map), notify: true);
       });
     });
