@@ -13,10 +13,11 @@ import 'database_list_provided.dart';
 abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
   FirebaseListProvided({
+    required String pathToData,
     String? pathToAvailableDataIds,
-    required this.pathToData,
-  })  : _pathToAvailableDataIds = pathToAvailableDataIds ?? "$pathToData-ids",
-        super() {
+  }) : super(
+            pathToData: pathToData,
+            pathToAvailableDataIds: pathToAvailableDataIds) {
     _listenToDatabase();
   }
 
@@ -25,7 +26,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
     _availableDataIdsAddedSubscription =
         _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
       String id = event.snapshot.key!;
-      // Get the new enterprise's data
+      // Get the new element data
       _dataRef.child(id).get().then((data) {
         // Add it to the list and notify
         super.add(deserializeItem(data.value), notify: true);
@@ -38,7 +39,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
         var map = (this[id] as ItemSerializable).serialize();
         map[event.snapshot.key!] = event.snapshot.value;
 
-        // Replace the enterprise in the list and notify
+        // Replace the element in the list and notify
         super.replace(deserializeItem(map), notify: true);
       });
     });
@@ -58,7 +59,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void add(T item, {bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
 
     _dataRef.child((item as ItemSerializable).id).set(item.serialize());
     _availableIdsRef.child(item.id).set(true);
@@ -70,7 +71,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void replace(T item, {bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
 
     _dataRef.child((item as ItemSerializable).id).set(item.serialize());
   }
@@ -80,7 +81,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   @override
   operator []=(value, T item) {
     throw const ShouldNotCall(
-        "You should not use this operator. Use the function replace instead.");
+        'You should not use this operator. Use the function replace instead.');
   }
 
   /// Removes an item from the Realtime Database.
@@ -88,7 +89,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void remove(value, {bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
 
     _availableIdsRef.child((this[value] as ItemSerializable).id).remove();
     _dataRef.child((this[value] as ItemSerializable).id).remove();
@@ -100,10 +101,10 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Note that [notify] has no effect here and should not be used.
   @override
   void clear({bool confirm = false, bool notify = true}) {
-    assert(notify, "Notify has no effect here and should not be used.");
+    assert(notify, 'Notify has no effect here and should not be used.');
     if (!confirm) {
       throw const ShouldNotCall(
-          "You almost cleared the entire database ! Set the parameter confirm to true if that was really your intention.");
+          'You almost cleared the entire database ! Set the parameter confirm to true if that was really your intention.');
     }
 
     for (final item in this) {
@@ -112,8 +113,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   }
 
   /// The path to the list of available ids inside the database.
-  String _pathToAvailableDataIds;
-  String get pathToAvailableDataIds => _pathToAvailableDataIds;
+  @override
   set pathToAvailableDataIds(String newPath) {
     _availableDataIdsAddedSubscription.cancel();
     _availableDataIdsRemovedSubscription.cancel();
@@ -121,12 +121,9 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
 
     super.clear();
 
-    _pathToAvailableDataIds = newPath;
+    super.pathToAvailableDataIds = newPath;
     _listenToDatabase();
   }
-
-  /// The path to the stored data inside the database.
-  final String pathToData;
 
   late StreamSubscription<DatabaseEvent> _availableDataIdsAddedSubscription;
   late StreamSubscription<DatabaseEvent> _availableDataIdsRemovedSubscription;
@@ -134,6 +131,6 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   final Map<String, StreamSubscription<DatabaseEvent>> _dataSubscriptions = {};
 
   DatabaseReference get _availableIdsRef =>
-      FirebaseDatabase.instance.ref(_pathToAvailableDataIds);
+      FirebaseDatabase.instance.ref(pathToAvailableDataIds);
   DatabaseReference get _dataRef => FirebaseDatabase.instance.ref(pathToData);
 }

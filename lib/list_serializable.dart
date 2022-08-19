@@ -92,6 +92,12 @@ abstract class ListSerializable<T> extends Iterable<T> {
     return _items.indexWhere(test, start);
   }
 
+  /// Return the element with specified [id].
+  ///
+  T fromId(String id) {
+    return firstWhere((element) => (element as ItemSerializable).id == id);
+  }
+
   /// Returns the index of [value] using different methods depending of its type.
   int _getIndex(value) {
     if (value is int) {
