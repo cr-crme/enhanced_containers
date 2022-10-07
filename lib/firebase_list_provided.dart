@@ -16,8 +16,9 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
     required String pathToData,
     String? pathToAvailableDataIds,
   }) : super(
-            pathToData: pathToData,
-            pathToAvailableDataIds: pathToAvailableDataIds) {
+          pathToData: pathToData,
+          pathToAvailableDataIds: pathToAvailableDataIds,
+        ) {
     _listenToDatabase();
   }
 

@@ -5,10 +5,11 @@ import './item_serializable.dart';
 /// Written by: @pariterre and @Guibi1
 abstract class CreationTimeItemSerializable extends ItemSerializable {
   /// Creates an [CreationTimeItemSerializable] with the original [creationTimeStamp].
-  CreationTimeItemSerializable({String? id, int? creationTimeStamp})
-      : creationTimeStamp =
-            creationTimeStamp ?? DateTime.now().microsecondsSinceEpoch,
-        super(id: id);
+  CreationTimeItemSerializable({
+    super.id,
+    int? creationTimeStamp,
+  }) : creationTimeStamp =
+            creationTimeStamp ?? DateTime.now().microsecondsSinceEpoch;
 
   /// Creates an [CreationTimeItemSerializable] from a map of serialized items.
   CreationTimeItemSerializable.fromSerialized(map)
