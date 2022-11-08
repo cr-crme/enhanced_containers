@@ -31,6 +31,12 @@ abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
   }
 
   @override
+  void move(int oldIndex, int newIndex, {bool notify = true}) {
+    super.move(oldIndex, newIndex);
+    if (notify) notifyListeners();
+  }
+
+  @override
   void remove(value, {bool notify = true}) {
     super.remove(value);
     if (notify) notifyListeners();
