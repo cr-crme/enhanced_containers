@@ -56,7 +56,7 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
     _items[_getKey(key)] = item;
   }
 
-  /// Returns the item at the location specified by [key].
+  /// Returns the item specified by [key].
   ///
   /// This method accepts a [String] as a [key] or an [ItemSerializable], where its id is going to be used.
   T? operator [](key) {
@@ -68,6 +68,11 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
   /// This method accepts a [String] as a [value] or an [ItemSerializable], where its id is going to be used.
   void remove(value) {
     _items.remove(_getKey(value));
+  }
+
+  /// Returns if the element specified byt [key] is in the map
+  bool containsKey(key) {
+    return _items.containsKey(_getKey(key));
   }
 
   /// Removes all objects from this map; the length of the map becomes zero.
