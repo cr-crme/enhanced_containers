@@ -1,6 +1,6 @@
 import './exceptions.dart';
 import './item_serializable.dart';
-import './creation_time_item_serializable.dart';
+import 'item_serializable_with_creation_time.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].
 ///
@@ -134,8 +134,8 @@ abstract class ListSerializable<T> extends Iterable<T> {
 }
 
 /// Provides convenient functions if the list is time dependent, that is
-/// made from [CreationTimeItemSerializable] items.
-mixin CreationTimedItems<T> on ListSerializable<T> {
+/// made from [ItemSerializableWithCreationTime] items.
+mixin ItemsWithCreationTimed<T> on ListSerializable<T> {
   /// Returns a sorted list reorder by time from the oldest to the earliest.
   ///
   /// The order is reversed if [reversed] is true.
@@ -144,13 +144,15 @@ mixin CreationTimedItems<T> on ListSerializable<T> {
     try {
       orderedMessages.sort(reversed
           ? (first, second) {
-              return (first as CreationTimeItemSerializable).creationTimeStamp -
-                  (second as CreationTimeItemSerializable).creationTimeStamp;
+              return (first as ItemSerializableWithCreationTime)
+                      .creationTimeStamp -
+                  (second as ItemSerializableWithCreationTime)
+                      .creationTimeStamp;
             }
           : (first, second) {
-              return (second as CreationTimeItemSerializable)
+              return (second as ItemSerializableWithCreationTime)
                       .creationTimeStamp -
-                  (first as CreationTimeItemSerializable).creationTimeStamp;
+                  (first as ItemSerializableWithCreationTime).creationTimeStamp;
             });
     } catch (_) {
       TypeException(

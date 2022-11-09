@@ -3,16 +3,16 @@ import './item_serializable.dart';
 /// The base class for the timable items contained in all the custom containers.
 ///
 /// Written by: @pariterre and @Guibi1
-abstract class CreationTimeItemSerializable extends ItemSerializable {
-  /// Creates an [CreationTimeItemSerializable] with the original [creationTimeStamp].
-  CreationTimeItemSerializable({
+abstract class ItemSerializableWithCreationTime extends ItemSerializable {
+  /// Creates an [ItemSerializableWithCreationTime] with the original [creationTimeStamp].
+  ItemSerializableWithCreationTime({
     super.id,
     int? creationTimeStamp,
   }) : creationTimeStamp =
             creationTimeStamp ?? DateTime.now().microsecondsSinceEpoch;
 
-  /// Creates an [CreationTimeItemSerializable] from a map of serialized items.
-  CreationTimeItemSerializable.fromSerialized(map)
+  /// Creates an [ItemSerializableWithCreationTime] from a map of serialized items.
+  ItemSerializableWithCreationTime.fromSerialized(map)
       : creationTimeStamp =
             map['creationTimeStamp'] ?? DateTime.now().microsecondsSinceEpoch,
         super.fromSerialized(map);
