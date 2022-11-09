@@ -38,15 +38,15 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
   /// Adds [item] to the map, extending the length by one.
   ///
   /// This method accepts a [String] as a [key] or an [ItemSerializable], where its id is going to be used.
-  void add(T item) {
-    this[_getKey(item)] = item;
+  void add(T item, {String? key}) {
+    _items[_getKey(key ?? item)] = item;
   }
 
   /// Updates the value of [item].
   ///
   /// This only works when the ids of the new and old value are identical.
-  void replace(T item) {
-    this[_getKey(item)] = item;
+  void replace(T item, {String? key}) {
+    this[_getKey(key ?? item)] = item;
   }
 
   /// Sets the value of the item to [item] at the specified location.
