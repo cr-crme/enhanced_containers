@@ -7,11 +7,10 @@ import 'list_serializable.dart';
 /// Written by: @pariterre and @Guibi1
 abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
   /// Creates an empty [ListProvided].
-  ListProvided() : super();
+  ListProvided();
 
   /// Creates a [ListProvided] from a map of serialized items.
-  ListProvided.fromSerialized(map)
-      : super.fromSerialized(map);
+  ListProvided.fromSerialized(map) : super.fromSerialized(map);
 
   @override
   void add(T item, {bool notify = true}) {
@@ -29,6 +28,12 @@ abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
   operator []=(value, T item) {
     super[value] = item;
     notifyListeners();
+  }
+
+  @override
+  void move(int oldIndex, int newIndex, {bool notify = true}) {
+    super.move(oldIndex, newIndex);
+    if (notify) notifyListeners();
   }
 
   @override

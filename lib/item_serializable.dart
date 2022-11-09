@@ -22,9 +22,6 @@ abstract class ItemSerializable {
     return out;
   }
 
-  /// Deserializes the current object
-  ItemSerializable deserializeItem(map);
-
   /// The global id of each instances.
   final String id;
 }

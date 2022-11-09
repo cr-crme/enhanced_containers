@@ -1,10 +1,11 @@
 import './exceptions.dart';
 import './item_serializable.dart';
-import './creation_time_item_serializable.dart';
+import 'item_serializable_with_creation_time.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].
 ///
-/// It allows to serialize and deserialize the whole list easily with [serialize] and [ListSerializable.fromSerialized].
+/// It allows to serialize and deserialize the whole list easily with [serialize]
+/// and [ListSerializable.fromSerialized].
 ///
 /// Written by: @pariterre and @Guibi1
 abstract class ListSerializable<T> extends Iterable<T> {
@@ -59,23 +60,36 @@ abstract class ListSerializable<T> extends Iterable<T> {
 
   /// Sets the value of the item to [item] at the specified location.
   ///
-  /// This method accepts an `int` as an index, an `String` as an id, and an [ItemSerializable] as the item to remove.
+  /// This method accepts an `int` as an index, an `String` as an id,
+  /// and an [ItemSerializable] as the item to remove.
   operator []=(value, T item) {
     _items[_getIndex(value)] = item;
   }
 
   /// Returns the item at the location specified by [value].
   ///
-  /// This method accepts an `int` as an index, an `String` as an id, and an [ItemSerializable] as the item to remove.
+  /// This method accepts an `int` as an index, an `String` as an id,
+  /// and an [ItemSerializable] as the item to remove.
   T operator [](value) {
     return _items[_getIndex(value)];
   }
 
   /// Removes a single item from the list.
   ///
-  /// This method accepts an `int` as an index, an `String` as an id, and an [ItemSerializable] as the item to remove.
+  /// This method accepts an `int` as an index, an `String` as an id,
+  /// and an [ItemSerializable] as the item to remove.
   void remove(value) {
     _items.removeAt(_getIndex(value));
+  }
+
+  /// Moves an item from one position to another
+  ///
+  /// This method accepts two `int` as indices, to move a [ItemSerializable] from
+  /// one place to another
+  void move(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex--;
+    final item = _items.removeAt(oldIndex);
+    _items.insert(newIndex, item);
   }
 
   /// Removes all objects from this list; the length of the list becomes zero.
@@ -120,8 +134,8 @@ abstract class ListSerializable<T> extends Iterable<T> {
 }
 
 /// Provides convenient functions if the list is time dependent, that is
-/// made from [CreationTimeItemSerializable] items.
-mixin CreationTimedItems<T> on ListSerializable<T> {
+/// made from [ItemSerializableWithCreationTime] items.
+mixin ItemsWithCreationTimed<T> on ListSerializable<T> {
   /// Returns a sorted list reorder by time from the oldest to the earliest.
   ///
   /// The order is reversed if [reversed] is true.
@@ -130,13 +144,15 @@ mixin CreationTimedItems<T> on ListSerializable<T> {
     try {
       orderedMessages.sort(reversed
           ? (first, second) {
-              return (first as CreationTimeItemSerializable).creationTimeStamp -
-                  (second as CreationTimeItemSerializable).creationTimeStamp;
+              return (first as ItemSerializableWithCreationTime)
+                      .creationTimeStamp -
+                  (second as ItemSerializableWithCreationTime)
+                      .creationTimeStamp;
             }
           : (first, second) {
-              return (second as CreationTimeItemSerializable)
+              return (second as ItemSerializableWithCreationTime)
                       .creationTimeStamp -
-                  (first as CreationTimeItemSerializable).creationTimeStamp;
+                  (first as ItemSerializableWithCreationTime).creationTimeStamp;
             });
     } catch (_) {
       TypeException(

@@ -13,11 +13,9 @@ import 'database_list_provided.dart';
 abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
   FirebaseListProvided({
-    required String pathToData,
+    required this.pathToData,
     String? pathToAvailableDataIds,
-  }) : super(
-            pathToData: pathToData,
-            pathToAvailableDataIds: pathToAvailableDataIds) {
+  }) : _pathToAvailableDataIds = pathToAvailableDataIds ?? '$pathToData-ids' {
     _listenToDatabase();
   }
 
@@ -112,8 +110,16 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
     }
   }
 
+  /// The path to the stored data inside the database.
+  final String pathToData;
+
   /// The path to the list of available ids inside the database.
-  @override
+  String _pathToAvailableDataIds;
+
+  /// The path to the list of available ids inside the database.
+  String get pathToAvailableDataIds => _pathToAvailableDataIds;
+
+  /// This will cancel all database subscriptions, then clear all data, then listen to the new path of ids
   set pathToAvailableDataIds(String newPath) {
     _availableDataIdsAddedSubscription.cancel();
     _availableDataIdsRemovedSubscription.cancel();
@@ -121,15 +127,17 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
 
     super.clear();
 
-    super.pathToAvailableDataIds = newPath;
+    _pathToAvailableDataIds = newPath;
     _listenToDatabase();
   }
 
+  // The Firebase subscriptions
   late StreamSubscription<DatabaseEvent> _availableDataIdsAddedSubscription;
   late StreamSubscription<DatabaseEvent> _availableDataIdsRemovedSubscription;
 
   final Map<String, StreamSubscription<DatabaseEvent>> _dataSubscriptions = {};
 
+  // Firebase Reference getters
   DatabaseReference get _availableIdsRef =>
       FirebaseDatabase.instance.ref(pathToAvailableDataIds);
   DatabaseReference get _dataRef => FirebaseDatabase.instance.ref(pathToData);
