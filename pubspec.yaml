@@ -1,4 +1,4 @@
-name: crcrme_enhanced_containers
+name: enhanced_containers
 description: A collection of custom containers for Dart
 version: 1.0.0
 
@@ -10,7 +10,7 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
-    firebase_database: ^9.0.17
+    firebase_database: ^10.0.3
     nanoid: ^1.0.0
 
 dev_dependencies:
