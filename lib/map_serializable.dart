@@ -80,6 +80,9 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
     _items.clear();
   }
 
+  /// Interface to the keys of the map
+  Iterable<String> get keys => _items.keys;
+
   /// Returns the key represented by [value] using different methods depending of its type.
   String _getKey(value) {
     if (value is String) {

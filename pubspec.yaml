@@ -1,8 +1,10 @@
 name: enhanced_containers
-description: A collection of custom containers for Dart
-version: 1.0.0
-
-publish_to: "none"
+version: 0.1.0
+description: >-
+    A collection of enhanced containers for Dart and Flutter.
+    It is particularly suitable for easy providers linked to database.
+homepage: https://github.com/cr-crme/enhanced_containers/
+repository: https://github.com/cr-crme/enhanced_containers/
 
 environment:
     sdk: ">=2.17.6 <3.0.0"

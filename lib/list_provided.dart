@@ -47,4 +47,7 @@ abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
     super.clear();
     if (notify) notifyListeners();
   }
+
+  /// If for some reason one needs to call notifier, they can call [forceNotify]
+  void forceNotify() => notifyListeners();
 }
