@@ -13,13 +13,13 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Enhanced containers demo')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Flexible(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
                 child: Text(
                   'This apps shows how to use the [ListProvided] to share'
                   'information between pages.\n'
@@ -36,22 +36,22 @@ class MainScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Flexible(
-              child: ElevatedButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, SharedDataFirstScreen.route),
-                  child: const Text('Modify the providers')),
-            ),
-            const SizedBox(height: 10),
-            Flexible(
-              child: ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(
-                      context, SharedDataSecondScreen.route),
-                  child: const Text('Show the providers')),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Flexible(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(
+                        context, SharedDataFirstScreen.route),
+                    child: const Text('Modify the providers')),
+              ),
+              const SizedBox(height: 10),
+              Flexible(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(
+                        context, SharedDataSecondScreen.route),
+                    child: const Text('Show the providers')),
+              ),
+            ],
+          ),
         ),
       ),
     );
