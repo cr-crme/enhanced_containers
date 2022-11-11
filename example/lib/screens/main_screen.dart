@@ -11,7 +11,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Enhanced containers demo (Home page)')),
+      appBar: AppBar(title: const Text('Enhanced containers demo')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -19,25 +19,29 @@ class MainScreen extends StatelessWidget {
           children: [
             Flexible(
               child: Text(
-                'This apps shows how to use the ListProvided\n'
-                'to share information between pages.\n'
+                'This apps shows how to use the ListProvided to share'
+                'information between pages.\n'
                 '\n'
-                'You can navigate to either of the page to see how information\n'
-                'are shared using enhanced_containers',
-                style: Theme.of(context).textTheme.headline5,
+                'The modify page collect and allows to modify the enhanced '
+                'providers while the second only collects.',
+                style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
             ),
+            const SizedBox(height: 20),
+            Flexible(
+              child: ElevatedButton(
+                  onPressed: () =>
+                      Navigator.pushNamed(context, SharedDataFirstScreen.route),
+                  child: const Text('Modify the providers')),
+            ),
             const SizedBox(height: 10),
-            ElevatedButton(
-                onPressed: () =>
-                    Navigator.pushNamed(context, SharedDataFirstScreen.route),
-                child: const Text('First shared data page')),
-            const SizedBox(height: 10),
-            ElevatedButton(
-                onPressed: () =>
-                    Navigator.pushNamed(context, SharedDataSecondScreen.route),
-                child: const Text('Second shared data page')),
+            Flexible(
+              child: ElevatedButton(
+                  onPressed: () => Navigator.pushNamed(
+                      context, SharedDataSecondScreen.route),
+                  child: const Text('Show the providers')),
+            ),
           ],
         ),
       ),
