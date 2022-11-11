@@ -3,10 +3,14 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import '../models/my_random_item.dart';
 
 class MapOfMyRandomItem extends MapProvided<MyRandomItem> {
-  /// This is a necessary override as [MapProvided] maps [SerializableItems].
-  /// Therefore, the program must know how to deserialize the actual item.
+  /// This examples shows how ot implement a [MapProvided] of some [ItemSerializable].
+  /// ([MyRandomItem] in the current case).
+  /// 
+  
+  /// This is a necessary override to use [MapProvided] as the enhanced provider
+  /// need to know how to deserialize the [ItemSerializable].
   ///
-  /// Usually, the item would deserialize itself, so it is simply a matter
+  /// Usually, the item knows how deserialize itself, so it is simply a matter
   /// of calling that constructor.
   ///
   @override
