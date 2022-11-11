@@ -128,7 +128,8 @@ abstract class ListSerializable<T> extends Iterable<T> {
   }
 
   /// This is a simple interface to the [map] method of the list
-  Iterable<T> map<T>(toElement) {
+  @override
+  Iterable<U> map<U>(toElement) {
     return _items.map(toElement);
   }
 
