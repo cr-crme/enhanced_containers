@@ -12,6 +12,7 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
+    provider: ^6.0.4
     firebase_database: ^10.0.3
     nanoid: ^1.0.0
 
