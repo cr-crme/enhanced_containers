@@ -6,7 +6,8 @@ import 'item_serializable.dart';
 /// It allows to serialize and deserialize the whole map easily with [serialize] and [MapSerializable.fromSerialized].
 ///
 /// Written by: @pariterre and @Guibi1
-abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
+abstract class MapSerializable<T extends ItemSerializable>
+    extends Iterable<MapEntry<String, T>> {
   /// Creates an empty [MapSerializable].
   MapSerializable();
 
@@ -19,7 +20,7 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
   Map<String, dynamic> serialize() {
     final serializedItem = <String, dynamic>{};
     _items.forEach((key, element) {
-      serializedItem[key] = (element as ItemSerializable).serialize();
+      serializedItem[key] = element.serialize();
     });
     return serializedItem;
   }
@@ -91,7 +92,8 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
       return value.id;
     } else {
       throw const TypeException(
-          'Wrong type for getting an element of the map.');
+        'Wrong type for getting an element of the map.',
+      );
     }
   }
 

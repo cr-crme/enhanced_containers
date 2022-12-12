@@ -10,7 +10,8 @@ import 'database_list_provided.dart';
 /// A [ListProvided] that automagically saves all of its into Firebase's Realtime Database, and notifies of changes made in real time.
 ///
 /// Written by: @Guibi1
-abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
+abstract class FirebaseListProvided<T extends ItemSerializable>
+    extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
   FirebaseListProvided({
     required this.pathToData,
@@ -34,7 +35,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
       _dataSubscriptions[id] =
           _dataRef.child(id).onChildChanged.listen((DatabaseEvent event) {
         // Serialise the current enterprise and update the new value
-        var map = (this[id] as ItemSerializable).serialize();
+        var map = this[id].serialize();
         map[event.snapshot.key!] = event.snapshot.value;
 
         // Replace the element in the list and notify
@@ -59,7 +60,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   void add(T item, {bool notify = true}) {
     assert(notify, 'Notify has no effect here and should not be used.');
 
-    _dataRef.child((item as ItemSerializable).id).set(item.serialize());
+    _dataRef.child(item.id).set(item.serialize());
     _availableIdsRef.child(item.id).set(true);
   }
 
@@ -71,7 +72,7 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   void replace(T item, {bool notify = true}) {
     assert(notify, 'Notify has no effect here and should not be used.');
 
-    _dataRef.child((item as ItemSerializable).id).set(item.serialize());
+    _dataRef.child(item.id).set(item.serialize());
   }
 
   /// You can't not use this function with [FirebaseListProvided] in case the ids of the provided values dont match.
@@ -89,8 +90,8 @@ abstract class FirebaseListProvided<T> extends DatabaseListProvided<T> {
   void remove(value, {bool notify = true}) {
     assert(notify, 'Notify has no effect here and should not be used.');
 
-    _availableIdsRef.child((this[value] as ItemSerializable).id).remove();
-    _dataRef.child((this[value] as ItemSerializable).id).remove();
+    _availableIdsRef.child(this[value].id).remove();
+    _dataRef.child(this[value].id).remove();
   }
 
   /// Removes all objects from this list and from the Realtime Database; the length of the list becomes zero.

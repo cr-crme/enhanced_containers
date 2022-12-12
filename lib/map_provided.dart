@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 
+import 'item_serializable.dart';
 import 'map_serializable.dart';
 
 /// An iterable [Map] that implements [ChangeNotifier] to notify every modifications made to its content.
 ///
 /// Written by: @pariterre and @Guibi1
-abstract class MapProvided<T> extends MapSerializable<T> with ChangeNotifier {
+abstract class MapProvided<T extends ItemSerializable>
+    extends MapSerializable<T> with ChangeNotifier {
   /// Creates an empty [MapProvided].
   MapProvided();
 

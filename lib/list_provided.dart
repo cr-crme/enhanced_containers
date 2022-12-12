@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 
+import 'item_serializable.dart';
 import 'list_serializable.dart';
 
 /// A [ListSerializable] that implements [ChangeNotifier] to notify every modifications made to its content.
 ///
 /// Written by: @pariterre and @Guibi1
-abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
+abstract class ListProvided<T extends ItemSerializable>
+    extends ListSerializable<T> with ChangeNotifier {
   /// Creates an empty [ListProvided].
   ListProvided();
 

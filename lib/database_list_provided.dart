@@ -1,7 +1,9 @@
 import 'exceptions.dart';
+import 'item_serializable.dart';
 import 'list_provided.dart';
 
-abstract class DatabaseListProvided<T> extends ListProvided<T> {
+abstract class DatabaseListProvided<T extends ItemSerializable>
+    extends ListProvided<T> {
   /// Creates an empty [DatabaseListProvided].
   DatabaseListProvided();
 

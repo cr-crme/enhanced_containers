@@ -1,5 +1,5 @@
-import './exceptions.dart';
-import './item_serializable.dart';
+import 'exceptions.dart';
+import 'item_serializable.dart';
 import 'item_serializable_with_creation_time.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].
@@ -8,7 +8,8 @@ import 'item_serializable_with_creation_time.dart';
 /// and [ListSerializable.fromSerialized].
 ///
 /// Written by: @pariterre and @Guibi1
-abstract class ListSerializable<T> extends Iterable<T> {
+abstract class ListSerializable<T extends ItemSerializable>
+    extends Iterable<T> {
   /// Creates an empty [ListSerializable].
   ListSerializable();
 
@@ -20,7 +21,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
   /// Serializes all of its items into a single map, separted by their id.
   Map<String, dynamic> serialize() {
     final serializedItem = <String, dynamic>{};
-    for (final element in _items as List<ItemSerializable>) {
+    for (final element in _items) {
       serializedItem[element.id] = element.serialize();
     }
     return serializedItem;
@@ -52,7 +53,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
   @override
   bool contains(Object? element) {
     if (element is String) {
-      return _items.any((item) => (item as ItemSerializable).id == element);
+      return _items.any((item) => item.id == element);
     } else {
       return _items.contains(element);
     }
@@ -109,7 +110,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
   /// Return the element with specified [id].
   ///
   T fromId(String id) {
-    return firstWhere((element) => (element as ItemSerializable).id == id);
+    return firstWhere((element) => element.id == id);
   }
 
   /// Returns the index of [value] using different methods depending of its type.
@@ -117,13 +118,13 @@ abstract class ListSerializable<T> extends Iterable<T> {
     if (value is int) {
       return value;
     } else if (value is String) {
-      return _items
-          .indexWhere((element) => (element as ItemSerializable).id == value);
+      return _items.indexWhere((element) => element.id == value);
     } else if (value is ItemSerializable) {
       return _getIndex(value.id);
     } else {
       throw const TypeException(
-          'Wrong type for getting an element of the list.');
+        'Wrong type for getting an element of the list.',
+      );
     }
   }
 
@@ -141,30 +142,22 @@ abstract class ListSerializable<T> extends Iterable<T> {
 
 /// Provides convenient functions if the list is time dependent, that is
 /// made from [ItemSerializableWithCreationTime] items.
-mixin ItemsWithCreationTimed<T> on ListSerializable<T> {
+mixin ItemsWithCreationTimed<T extends ItemSerializableWithCreationTime>
+    on ListSerializable<T> {
   /// Returns a sorted list reorder by time from the oldest to the earliest.
   ///
   /// The order is reversed if [reversed] is true.
   List<T> toListByTime({reversed = false}) {
     final orderedMessages = toList(growable: false);
-    try {
-      orderedMessages.sort(reversed
+    orderedMessages.sort(
+      reversed
           ? (first, second) {
-              return (first as ItemSerializableWithCreationTime)
-                      .creationTimeStamp -
-                  (second as ItemSerializableWithCreationTime)
-                      .creationTimeStamp;
+              return first.creationTimeStamp - second.creationTimeStamp;
             }
           : (first, second) {
-              return (second as ItemSerializableWithCreationTime)
-                      .creationTimeStamp -
-                  (first as ItemSerializableWithCreationTime).creationTimeStamp;
-            });
-    } catch (_) {
-      TypeException(
-          'The list should be made from TimedItemSerializable items to use '
-          'sortByCreationTime.');
-    }
+              return second.creationTimeStamp - first.creationTimeStamp;
+            },
+    );
     return orderedMessages;
   }
 }
