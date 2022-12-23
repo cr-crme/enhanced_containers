@@ -9,7 +9,8 @@ abstract class ItemSerializable {
   ItemSerializable({String? id}) : id = id ?? nanoid();
 
   /// Creates an [ItemSerializable] from a map of serialized items.
-  ItemSerializable.fromSerialized(map) : id = map['id'] ?? nanoid();
+  ItemSerializable.fromSerialized(map)
+      : id = map != null && map['id'] != null ? map['id'] : nanoid();
 
   /// Must be overriten to serialise additionnal information.
   Map<String, dynamic> serializedMap();

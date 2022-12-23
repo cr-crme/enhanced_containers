@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 
+import 'database_list_provided.dart';
 import 'exceptions.dart';
 import 'item_serializable.dart';
-import 'list_provided.dart';
-import 'database_list_provided.dart';
+import 'list_serializable.dart';
 
 /// A [ListProvided] that automagically saves all of its into Firebase's Realtime Database, and notifies of changes made in real time.
 ///
@@ -62,6 +62,14 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
 
     _dataRef.child(item.id).set(item.serialize());
     _availableIdsRef.child(item.id).set(true);
+  }
+
+  /// Inserts elements in a list of a logged user
+  ///
+  void insertInList(String pathToItem, ListSerializable items) {
+    for (final item in items) {
+      _dataRef.child(pathToItem).child(item.id).set(item.serialize());
+    }
   }
 
   /// Replaces the current item by [item] in the Realtime Database.
