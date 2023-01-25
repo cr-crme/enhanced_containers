@@ -16,9 +16,16 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   FirebaseListProvided({
     required this.pathToData,
     String? pathToAvailableDataIds,
-  }) : _pathToAvailableDataIds = pathToAvailableDataIds ?? '$pathToData-ids' {
-    _listenToDatabase();
+  }) : _pathToAvailableDataIds = pathToAvailableDataIds ?? '$pathToData-ids';
+
+  /// This method should be called after the user has logged on
+  @override
+  void initializeFetchingData() {
+    if (!_isInitialized) _listenToDatabase();
+    _isInitialized = true;
   }
+
+  bool _isInitialized = false;
 
   void _listenToDatabase() {
     // Listen to added ids
@@ -53,12 +60,18 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     });
   }
 
+  void _sanityChecks({required bool isInitialized, required bool notify}) {
+    assert(notify, 'Notify has no effect here and should not be used.');
+    assert(
+        _isInitialized, 'Please call \'initializeFetchingData\' at least once');
+  }
+
   /// Adds an item to the Realtime Database.
   ///
   /// Note that [notify] has no effect here and should not be used.
   @override
   void add(T item, {bool notify = true}) {
-    assert(notify, 'Notify has no effect here and should not be used.');
+    _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     _dataRef.child(item.id).set(item.serialize());
     _availableIdsRef.child(item.id).set(true);
@@ -78,7 +91,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// Note that [notify] has no effect here and should not be used.
   @override
   void replace(T item, {bool notify = true}) {
-    assert(notify, 'Notify has no effect here and should not be used.');
+    _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     _dataRef.child(item.id).set(item.serialize());
   }
@@ -96,7 +109,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// Note that [notify] has no effect here and should not be used.
   @override
   void remove(value, {bool notify = true}) {
-    assert(notify, 'Notify has no effect here and should not be used.');
+    _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     _availableIdsRef.child(this[value].id).remove();
     _dataRef.child(this[value].id).remove();
@@ -108,7 +121,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// Note that [notify] has no effect here and should not be used.
   @override
   void clear({bool confirm = false, bool notify = true}) {
-    assert(notify, 'Notify has no effect here and should not be used.');
+    _sanityChecks(isInitialized: _isInitialized, notify: notify);
     if (!confirm) {
       throw const ShouldNotCall(
           'You almost cleared the entire database ! Set the parameter confirm to true if that was really your intention.');
