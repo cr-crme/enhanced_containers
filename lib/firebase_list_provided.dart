@@ -145,18 +145,16 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
 
   /// This will cancel all database subscriptions, then clear all data, then listen to the new path of ids
   set pathToAvailableDataIds(String newPath) {
-    _availableDataIdsAddedSubscription.cancel();
-    _availableDataIdsRemovedSubscription.cancel();
-    _dataSubscriptions.forEach((id, sub) => sub.cancel());
-
-    super.clear();
+    if (_isInitialized) {
+      _availableDataIdsAddedSubscription.cancel();
+      _availableDataIdsRemovedSubscription.cancel();
+      _dataSubscriptions.forEach((id, sub) => sub.cancel());
+    }
 
     _pathToAvailableDataIds = newPath;
-    if (newPath.isEmpty) {
-      _isInitialized = false;
-    } else {
-      initializeFetchingData();
-    }
+    _isInitialized = false;
+    super.clear();
+    initializeFetchingData();
   }
 
   // The Firebase subscriptions
