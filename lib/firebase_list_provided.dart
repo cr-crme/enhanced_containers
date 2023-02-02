@@ -21,6 +21,8 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// This method should be called after the user has logged on
   @override
   void initializeFetchingData() {
+    if (pathToAvailableDataIds.isEmpty) return;
+
     if (!_isInitialized) _listenToDatabase();
     _isInitialized = true;
   }
@@ -150,7 +152,11 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     super.clear();
 
     _pathToAvailableDataIds = newPath;
-    _listenToDatabase();
+    if (newPath.isEmpty) {
+      _isInitialized = false;
+    } else {
+      initializeFetchingData();
+    }
   }
 
   // The Firebase subscriptions
