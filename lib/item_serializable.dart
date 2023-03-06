@@ -25,4 +25,22 @@ abstract class ItemSerializable {
 
   /// The global id of each instances.
   final String id;
+
+  /// Helpers to deserialize
+  static List<String> listFromSerialized(List? list) {
+    return (list ?? []).map((e) => e.toString()).toList();
+  }
+
+  static Set<String> setFromSerialized(List? list) {
+    return (list ?? []).map((e) => e.toString()).toSet();
+  }
+
+  static Map<String, dynamic> mapFromSerialized(Map? map) {
+    return (map ?? {}).map((k, v) => MapEntry(k.toString(), v));
+  }
+
+  static double doubleFromSerialized(num? number, {double defaultValue = 0}) {
+    if (number is int) return number.toDouble();
+    return (number ?? defaultValue) as double;
+  }
 }
