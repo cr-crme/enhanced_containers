@@ -1,4 +1,4 @@
-import './item_serializable.dart';
+import 'item_serializable.dart';
 
 /// The base class for the timable items contained in all the custom containers.
 ///

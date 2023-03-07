@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './shared_data_first_screen.dart';
-import './shared_data_second_screen.dart';
+import 'shared_data_first_screen.dart';
+import 'shared_data_second_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});

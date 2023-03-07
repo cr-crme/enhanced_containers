@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import './shared_data_second_screen.dart';
 import '../widgets/numbers_to_list.dart';
 import '../widgets/numbers_to_map.dart';
+import 'shared_data_second_screen.dart';
 
 /// Here is an example on how to actually call and fill the [ListProvided] and
 /// [MapProvided]. See repectively [_AddNumbersToList] and [_AddNumbersToMap].
