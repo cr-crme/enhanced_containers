@@ -95,7 +95,7 @@ class _NumbersToMapState extends State<NumbersToMap> {
     for (final key in itemsAsMap.keys) {
       listToShow.add(Text(
         '\'$key\': ${itemsAsMap[key].toString()}',
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
       ));
     }
 
