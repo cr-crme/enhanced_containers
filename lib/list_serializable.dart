@@ -117,6 +117,12 @@ abstract class ListSerializable<T extends ItemSerializable>
     return firstWhere((element) => element.id == id);
   }
 
+  /// Return the specified [id] is in the list.
+  ///
+  bool hasId(String id) {
+    return indexWhere((element) => element.id == id) >= 0;
+  }
+
   /// Returns the index of [value] using different methods depending of its type.
   int _getIndex(value) {
     if (value is int) {
