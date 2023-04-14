@@ -43,7 +43,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       // Listen to data changes
       _dataSubscriptions[id] =
           _dataRef.child(id).onChildChanged.listen((DatabaseEvent event) {
-        // Serialise the current enterprise and update the new value
+        // Serialize the current item and update the new value
         var map = this[id].serialize();
         map[event.snapshot.key!] = event.snapshot.value;
 
