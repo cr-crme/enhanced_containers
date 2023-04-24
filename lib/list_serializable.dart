@@ -32,7 +32,7 @@ abstract class ListSerializable<T extends ItemSerializable>
 
   /// Returns a copy of the raw list. This method must be used with great care
   /// since modifying this list can resulted in an ill-state of the [ListSerializable]
-  Iterable<T> get rawList => _items;
+  List<T> get rawList => _items;
 
   /// Deserializes a map of items with the help of [deserializeItem].
   void deserialize(map) {

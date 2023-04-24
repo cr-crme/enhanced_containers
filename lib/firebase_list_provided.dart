@@ -154,7 +154,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     _pathToAvailableDataIds = newPath;
     _isInitialized = false;
     super.clear();
-    initializeFetchingData();
   }
 
   // The Firebase subscriptions
