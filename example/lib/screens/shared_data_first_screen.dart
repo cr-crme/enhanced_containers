@@ -49,11 +49,11 @@ class SharedDataFirstScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 50),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Flexible(child: NumbersToList(allowNewNumbers: true)),
                   SizedBox(width: 40),
                   Flexible(child: NumbersToMap(allowNewNumbers: true)),
