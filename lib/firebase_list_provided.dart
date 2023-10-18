@@ -13,10 +13,11 @@ import 'list_serializable.dart';
 abstract class FirebaseListProvided<T extends ItemSerializable>
     extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
-  FirebaseListProvided({
-    required this.pathToData,
-    String? pathToAvailableDataIds,
-  }) : _pathToAvailableDataIds = pathToAvailableDataIds ?? '$pathToData-ids';
+  FirebaseListProvided(
+      {required this.pathToData,
+      String? pathToAvailableDataIds,
+      this.mockMe = false})
+      : _pathToAvailableDataIds = pathToAvailableDataIds ?? '$pathToData-ids';
 
   /// This method should be called after the user has logged on
   @override
@@ -28,8 +29,11 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   }
 
   bool _isInitialized = false;
+  final bool mockMe;
 
   void _listenToDatabase() {
+    if (mockMe) return;
+
     // Listen to added ids
     _availableDataIdsAddedSubscription =
         _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
