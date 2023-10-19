@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 
 import 'database_list_provided.dart';
 import 'exceptions.dart';
@@ -81,6 +82,10 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
 
     _dataRef.child(item.id).set(item.serialize());
     _availableIdsRef.child(item.id).set(true);
+
+    if (mockMe) {
+      super.add(item, notify: true);
+    }
   }
 
   /// Inserts elements in a list of a logged user
@@ -100,6 +105,9 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     _dataRef.child(item.id).set(item.serialize());
+    if (mockMe) {
+      super.replace(item, notify: true);
+    }
   }
 
   /// You can't not use this function with [FirebaseListProvided] in case the ids of the provided values dont match.
@@ -119,6 +127,10 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
 
     _availableIdsRef.child(this[value].id).remove();
     _dataRef.child(this[value].id).remove();
+
+    if (mockMe) {
+      super.remove(value, notify: true);
+    }
   }
 
   /// Removes all objects from this list and from the Realtime Database; the length of the list becomes zero.
@@ -167,7 +179,10 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   final Map<String, StreamSubscription<DatabaseEvent>> _dataSubscriptions = {};
 
   // Firebase Reference getters
+  FirebaseDatabase get firebaseInstance =>
+      mockMe ? MockFirebaseDatabase.instance : FirebaseDatabase.instance;
+
   DatabaseReference get _availableIdsRef =>
-      FirebaseDatabase.instance.ref(pathToAvailableDataIds);
-  DatabaseReference get _dataRef => FirebaseDatabase.instance.ref(pathToData);
+      firebaseInstance.ref(pathToAvailableDataIds);
+  DatabaseReference get _dataRef => firebaseInstance.ref(pathToData);
 }
