@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/providers/list_of_my_random_item.dart';
-import '/providers/map_of_my_random_item.dart';
-import '/screens/main_screen.dart';
-import '/screens/shared_data_first_screen.dart';
-import '/screens/shared_data_second_screen.dart';
+import 'package:enhanced_containers_example/providers/list_of_my_random_item.dart';
+import 'package:enhanced_containers_example/providers/map_of_my_random_item.dart';
+import 'package:enhanced_containers_example/screens/main_screen.dart';
+import 'package:enhanced_containers_example/screens/shared_data_first_screen.dart';
+import 'package:enhanced_containers_example/screens/shared_data_second_screen.dart';
 
 void main() {
   runApp(const MyApp());
