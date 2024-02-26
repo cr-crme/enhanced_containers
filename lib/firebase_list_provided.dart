@@ -18,12 +18,12 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       {required this.pathToData,
       String? pathToAvailableDataIds,
       this.mockMe = false})
-      : _pathToAvailableDataIds = pathToAvailableDataIds ?? '$pathToData-ids';
+      : _pathToAvailableDataIds = pathToAvailableDataIds;
 
   /// This method should be called after the user has logged on
   @override
   void initializeFetchingData() {
-    if (pathToAvailableDataIds.isEmpty) return;
+    if (pathToAvailableDataIds?.isEmpty ?? false) return;
 
     if (!_isInitialized) _listenToDatabase();
     _isInitialized = true;
@@ -36,8 +36,10 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     if (mockMe) return;
 
     // Listen to added ids
+    if (_availableIdsRef == null) return;
+
     _availableDataIdsAddedSubscription =
-        _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
+        _availableIdsRef!.onChildAdded.listen((DatabaseEvent event) {
       String id = event.snapshot.key!;
       // Get the new element data
       _dataRef.child(id).get().then((data) {
@@ -59,7 +61,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
 
     // Listen to removed ids
     _availableDataIdsRemovedSubscription =
-        _availableIdsRef.onChildRemoved.listen((DatabaseEvent event) {
+        _availableIdsRef!.onChildRemoved.listen((DatabaseEvent event) {
       // Stop listening to data changes
       _dataSubscriptions.remove(event.snapshot.key!)?.cancel();
       // Remove the enterprise from the list and notify
@@ -154,16 +156,16 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   final String pathToData;
 
   /// The path to the list of available ids inside the database.
-  String _pathToAvailableDataIds;
+  String? _pathToAvailableDataIds;
 
   /// The path to the list of available ids inside the database.
-  String get pathToAvailableDataIds => _pathToAvailableDataIds;
+  String? get pathToAvailableDataIds => _pathToAvailableDataIds;
 
   /// This will cancel all database subscriptions, then clear all data, then listen to the new path of ids
-  set pathToAvailableDataIds(String newPath) {
+  set pathToAvailableDataIds(String? newPath) {
     if (_isInitialized) {
-      _availableDataIdsAddedSubscription.cancel();
-      _availableDataIdsRemovedSubscription.cancel();
+      _availableDataIdsAddedSubscription?.cancel();
+      _availableDataIdsRemovedSubscription?.cancel();
       _dataSubscriptions.forEach((id, sub) => sub.cancel());
     }
 
@@ -173,8 +175,8 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   }
 
   // The Firebase subscriptions
-  late StreamSubscription<DatabaseEvent> _availableDataIdsAddedSubscription;
-  late StreamSubscription<DatabaseEvent> _availableDataIdsRemovedSubscription;
+  StreamSubscription<DatabaseEvent>? _availableDataIdsAddedSubscription;
+  StreamSubscription<DatabaseEvent>? _availableDataIdsRemovedSubscription;
 
   final Map<String, StreamSubscription<DatabaseEvent>> _dataSubscriptions = {};
 
@@ -182,7 +184,8 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   FirebaseDatabase get firebaseInstance =>
       mockMe ? MockFirebaseDatabase.instance : FirebaseDatabase.instance;
 
-  DatabaseReference get _availableIdsRef =>
-      firebaseInstance.ref(pathToAvailableDataIds);
+  DatabaseReference? get _availableIdsRef => pathToAvailableDataIds == null
+      ? null
+      : firebaseInstance.ref(pathToAvailableDataIds);
   DatabaseReference get _dataRef => firebaseInstance.ref(pathToData);
 }
