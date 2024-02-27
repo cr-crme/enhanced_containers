@@ -21,6 +21,12 @@ abstract class ListProvided<T extends ItemSerializable>
   }
 
   @override
+  void addAll(Iterable<T> items, {bool notify = true}) {
+    super.addAll(items);
+    if (notify) notifyListeners();
+  }
+
+  @override
   void replace(T item, {bool notify = true}) {
     super.replace(item);
     if (notify) notifyListeners();

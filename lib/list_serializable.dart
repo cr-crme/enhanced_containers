@@ -47,6 +47,11 @@ abstract class ListSerializable<T extends ItemSerializable>
     _items.add(item);
   }
 
+  /// Adds all of [items] to the end of this list.
+  void addAll(Iterable<T> items) {
+    _items.addAll(items);
+  }
+
   /// Updates the value of [item].
   ///
   /// This only works when the ids of the new and old value are identical.
@@ -109,6 +114,19 @@ abstract class ListSerializable<T extends ItemSerializable>
   /// the index of `o` is returned.
   int indexWhere(bool Function(T element) test, [int start = 0]) {
     return _items.indexWhere(test, start);
+  }
+
+  /// The first object in the list that satisfies the provided [test].
+  /// The first time an object `o` is encountered so that `test(o)` is true,
+  /// the value of `o` is returned.
+  /// If no element satisfies [test], the result of invoking the [orElse] function is returned.
+  /// If [orElse] is omitted, it defaults to returning `null`.
+  T? firstWhereOrNull(bool Function(T element) test, {T Function()? orElse}) {
+    try {
+      return firstWhere(test, orElse: orElse);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Return the element with specified [id].

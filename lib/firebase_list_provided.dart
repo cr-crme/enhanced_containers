@@ -8,7 +8,8 @@ import 'exceptions.dart';
 import 'item_serializable.dart';
 import 'list_serializable.dart';
 
-/// A [ListProvided] that automagically saves all of its into Firebase's Realtime Database, and notifies of changes made in real time.
+/// A [DatabaseListProvided] that automagically saves all of its into Firebase's
+/// Realtime Database, and notifies of changes made in real time.
 ///
 /// Written by: @Guibi1
 abstract class FirebaseListProvided<T extends ItemSerializable>
@@ -23,8 +24,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// This method should be called after the user has logged on
   @override
   void initializeFetchingData() {
-    if (pathToAvailableDataIds?.isEmpty ?? false) return;
-
     if (!_isInitialized) _listenToDatabase();
     _isInitialized = true;
   }
@@ -83,10 +82,27 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     _dataRef.child(item.id).set(item.serialize());
-    _availableIdsRef.child(item.id).set(true);
+    _availableIdsRef?.child(item.id).set(true);
 
     if (mockMe) {
       super.add(item, notify: true);
+    }
+  }
+
+  /// Adds all of [items] to the Realtime Database.
+  ///
+  /// Note that [notify] has no effect here and should not be used.
+  @override
+  void addAll(Iterable<T> items, {bool notify = true}) {
+    _sanityChecks(isInitialized: _isInitialized, notify: notify);
+
+    for (final item in items) {
+      _dataRef.child(item.id).set(item.serialize());
+      _availableIdsRef?.child(item.id).set(true);
+    }
+
+    if (mockMe) {
+      super.addAll(items, notify: true);
     }
   }
 
@@ -127,8 +143,8 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   void remove(value, {bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
-    _availableIdsRef.child(this[value].id).remove();
     _dataRef.child(this[value].id).remove();
+    _availableIdsRef?.child(this[value].id).remove();
 
     if (mockMe) {
       super.remove(value, notify: true);
