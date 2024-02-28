@@ -78,31 +78,14 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   ///
   /// Note that [notify] has no effect here and should not be used.
   @override
-  void add(T item, {bool notify = true}) {
+  void add(T item, {bool notify = true, bool cacheItem = false}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     _dataRef.child(item.id).set(item.serialize());
     _availableIdsRef?.child(item.id).set(true);
 
-    if (mockMe) {
+    if (mockMe || cacheItem) {
       super.add(item, notify: true);
-    }
-  }
-
-  /// Adds all of [items] to the Realtime Database.
-  ///
-  /// Note that [notify] has no effect here and should not be used.
-  @override
-  void addAll(Iterable<T> items, {bool notify = true}) {
-    _sanityChecks(isInitialized: _isInitialized, notify: notify);
-
-    for (final item in items) {
-      _dataRef.child(item.id).set(item.serialize());
-      _availableIdsRef?.child(item.id).set(true);
-    }
-
-    if (mockMe) {
-      super.addAll(items, notify: true);
     }
   }
 

@@ -18,7 +18,7 @@ abstract class ItemSerializable {
   /// Serializes the current object.
   @nonVirtual
   Map<String, dynamic> serialize() {
-    var out = serializedMap();
+    final out = serializedMap();
     out['id'] = id;
     return out;
   }
