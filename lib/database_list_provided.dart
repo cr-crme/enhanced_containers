@@ -9,7 +9,11 @@ abstract class DatabaseListProvided<T extends ItemSerializable>
 
   /// This method should be called after the user has logged in so they can
   /// start fetching data
-  void initializeFetchingData();
+  Future<void> initializeFetchingData();
+
+  /// This method should be called after the user has logged out so they stop
+  /// fetching data
+  Future<void> stopFetchingData();
 
   /// You can't use this function with [DatabaseListProvided], as it already
   /// saves its content in the cloud automagically.

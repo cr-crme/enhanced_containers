@@ -15,17 +15,27 @@ import 'list_serializable.dart';
 abstract class FirebaseListProvided<T extends ItemSerializable>
     extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
-  FirebaseListProvided(
-      {required this.pathToData,
-      String? pathToAvailableDataIds,
-      this.mockMe = false})
-      : _pathToAvailableDataIds = pathToAvailableDataIds;
+  FirebaseListProvided({required this.pathToData, this.mockMe = false});
 
   /// This method should be called after the user has logged on
   @override
-  void initializeFetchingData() {
+  Future<void> initializeFetchingData() async {
     if (!_isInitialized) _listenToDatabase();
     _isInitialized = true;
+  }
+
+  @override
+  Future<void> stopFetchingData() async {
+    for (final subscription in _dataSubscriptions.values) {
+      subscription.cancel();
+    }
+    _dataSubscriptions.clear();
+    _idsAddedSubscription?.cancel();
+    _idsRemovedSubscription?.cancel();
+
+    super.clear();
+
+    _isInitialized = false;
   }
 
   bool _isInitialized = false;
@@ -35,10 +45,8 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     if (mockMe) return;
 
     // Listen to added ids
-    if (_availableIdsRef == null) return;
-
-    _availableDataIdsAddedSubscription =
-        _availableIdsRef!.onChildAdded.listen((DatabaseEvent event) {
+    _idsAddedSubscription =
+        _availableIdsRef.onChildAdded.listen((DatabaseEvent event) {
       String id = event.snapshot.key!;
       // Get the new element data
       _dataRef.child(id).get().then((data) {
@@ -59,8 +67,8 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     });
 
     // Listen to removed ids
-    _availableDataIdsRemovedSubscription =
-        _availableIdsRef!.onChildRemoved.listen((DatabaseEvent event) {
+    _idsRemovedSubscription =
+        _availableIdsRef.onChildRemoved.listen((DatabaseEvent event) {
       // Stop listening to data changes
       _dataSubscriptions.remove(event.snapshot.key!)?.cancel();
       // Remove the enterprise from the list and notify
@@ -82,7 +90,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     _dataRef.child(item.id).set(item.serialize());
-    _availableIdsRef?.child(item.id).set(true);
 
     if (mockMe || cacheItem) {
       super.add(item, notify: true);
@@ -126,8 +133,10 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   void remove(value, {bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
-    _dataRef.child(this[value].id).remove();
-    _availableIdsRef?.child(this[value].id).remove();
+    final id = this[value].id;
+    _dataRef.child(id).remove();
+    _dataSubscriptions[id]?.cancel();
+    _dataSubscriptions.remove(id);
 
     if (mockMe) {
       super.remove(value, notify: true);
@@ -154,37 +163,15 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// The path to the stored data inside the database.
   final String pathToData;
 
-  /// The path to the list of available ids inside the database.
-  String? _pathToAvailableDataIds;
-
-  /// The path to the list of available ids inside the database.
-  String? get pathToAvailableDataIds => _pathToAvailableDataIds;
-
-  /// This will cancel all database subscriptions, then clear all data, then listen to the new path of ids
-  set pathToAvailableDataIds(String? newPath) {
-    if (_isInitialized) {
-      _availableDataIdsAddedSubscription?.cancel();
-      _availableDataIdsRemovedSubscription?.cancel();
-      _dataSubscriptions.forEach((id, sub) => sub.cancel());
-    }
-
-    _pathToAvailableDataIds = newPath;
-    _isInitialized = false;
-    super.clear();
-  }
-
   // The Firebase subscriptions
-  StreamSubscription<DatabaseEvent>? _availableDataIdsAddedSubscription;
-  StreamSubscription<DatabaseEvent>? _availableDataIdsRemovedSubscription;
-
+  StreamSubscription<DatabaseEvent>? _idsAddedSubscription;
+  StreamSubscription<DatabaseEvent>? _idsRemovedSubscription;
   final Map<String, StreamSubscription<DatabaseEvent>> _dataSubscriptions = {};
 
   // Firebase Reference getters
   FirebaseDatabase get firebaseInstance =>
       mockMe ? MockFirebaseDatabase.instance : FirebaseDatabase.instance;
 
-  DatabaseReference? get _availableIdsRef => pathToAvailableDataIds == null
-      ? null
-      : firebaseInstance.ref(pathToAvailableDataIds);
+  DatabaseReference get _availableIdsRef => firebaseInstance.ref(pathToData);
   DatabaseReference get _dataRef => firebaseInstance.ref(pathToData);
 }
