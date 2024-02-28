@@ -89,7 +89,12 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   void add(T item, {bool notify = true, bool cacheItem = false}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
-    _dataRef.child(item.id).set(item.serialize());
+    try {
+      _dataRef.child(item.id).set(item.serialize());
+    } on Exception {
+      // Make sure to keep the list in sync with the database
+      notifyListeners();
+    }
 
     if (mockMe || cacheItem) {
       super.add(item, notify: true);
@@ -99,8 +104,13 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// Inserts elements in a list of a logged user
   ///
   void insertInList(String pathToItem, ListSerializable items) {
-    for (final item in items) {
-      _dataRef.child(pathToItem).child(item.id).set(item.serialize());
+    try {
+      for (final item in items) {
+        _dataRef.child(pathToItem).child(item.id).set(item.serialize());
+      }
+    } on Exception {
+      // Make sure to keep the list in sync with the database
+      notifyListeners();
     }
   }
 
@@ -109,10 +119,15 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   ///
   /// Note that [notify] has no effect here and should not be used.
   @override
-  void replace(T item, {bool notify = true}) {
+  Future<void> replace(T item, {bool notify = true}) async {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
-    _dataRef.child(item.id).set(item.serialize());
+    try {
+      await _dataRef.child(item.id).set(item.serialize());
+    } on Exception {
+      // Make sure to keep the list in sync with the database
+      notifyListeners();
+    }
     if (mockMe) {
       super.replace(item, notify: true);
     }
