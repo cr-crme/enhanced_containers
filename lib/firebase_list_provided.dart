@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
@@ -52,6 +53,9 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       _dataRef.child(id).get().then((data) {
         // Add it to the list and notify
         super.add(deserializeItem(data.value), notify: true);
+      }).onError((error, stackTrace) {
+        dev.log('Error while fetching data from the database: $error',
+            error: error, stackTrace: stackTrace);
       });
 
       // Listen to data changes
@@ -176,7 +180,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   }
 
   /// The path to the stored data inside the database.
-  final String pathToData;
+  String pathToData;
 
   // The Firebase subscriptions
   StreamSubscription<DatabaseEvent>? _idsAddedSubscription;
