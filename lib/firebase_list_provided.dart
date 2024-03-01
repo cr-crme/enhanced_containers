@@ -90,7 +90,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   ///
   /// Note that [notify] has no effect here and should not be used.
   @override
-  void add(T item, {bool notify = true, bool cacheItem = false}) {
+  void add(T item, {bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
     try {
@@ -100,7 +100,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       notifyListeners();
     }
 
-    if (mockMe || cacheItem) {
+    if (mockMe) {
       super.add(item, notify: true);
     }
   }
