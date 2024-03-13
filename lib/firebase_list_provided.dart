@@ -52,7 +52,11 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       // Get the new element data
       _dataRef.child(id).get().then((data) {
         // Add it to the list and notify
-        super.add(deserializeItem(data.value), notify: true);
+        final value = (data.value as Map).containsKey(data.key)
+            ? (data.value as Map)[data.key]!
+            : data.value;
+
+        super.add(deserializeItem(value), notify: true);
       }).onError((error, stackTrace) {
         dev.log('Error while fetching data from the database: $error',
             error: error, stackTrace: stackTrace);
