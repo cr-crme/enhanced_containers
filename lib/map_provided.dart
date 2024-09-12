@@ -12,7 +12,7 @@ abstract class MapProvided<T extends ItemSerializable>
   MapProvided();
 
   /// Creates a [MapProvided] from a map of serialized items.
-  MapProvided.fromSerialized(map) : super.fromSerialized(map);
+  MapProvided.fromSerialized(super.map) : super.fromSerialized();
 
   /// Adds [item] to the map, extending the length by one.
   ///

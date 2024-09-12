@@ -12,10 +12,10 @@ abstract class ItemSerializableWithCreationTime extends ItemSerializable {
             creationTimeStamp ?? DateTime.now().microsecondsSinceEpoch;
 
   /// Creates an [ItemSerializableWithCreationTime] from a map of serialized items.
-  ItemSerializableWithCreationTime.fromSerialized(map)
+  ItemSerializableWithCreationTime.fromSerialized(super.map)
       : creationTimeStamp =
             map['creationTimeStamp'] ?? DateTime.now().microsecondsSinceEpoch,
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   /// Serializes the current object.
   @override

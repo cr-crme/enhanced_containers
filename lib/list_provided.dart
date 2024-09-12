@@ -12,7 +12,7 @@ abstract class ListProvided<T extends ItemSerializable>
   ListProvided();
 
   /// Creates a [ListProvided] from a map of serialized items.
-  ListProvided.fromSerialized(map) : super.fromSerialized(map);
+  ListProvided.fromSerialized(super.map) : super.fromSerialized();
 
   @override
   void add(T item, {bool notify = true}) {
