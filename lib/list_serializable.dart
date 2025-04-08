@@ -1,5 +1,6 @@
+import 'package:enhanced_containers_foundation/item_serializable.dart';
+
 import 'exceptions.dart';
-import 'item_serializable.dart';
 import 'item_serializable_with_creation_time.dart';
 
 /// An iterable [List] that is made to handle [ItemSerializable].

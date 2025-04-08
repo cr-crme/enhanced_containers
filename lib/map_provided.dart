@@ -1,6 +1,6 @@
+import 'package:enhanced_containers_foundation/item_serializable.dart';
 import 'package:flutter/foundation.dart';
 
-import 'item_serializable.dart';
 import 'map_serializable.dart';
 
 /// An iterable [Map] that implements [ChangeNotifier] to notify every modifications made to its content.

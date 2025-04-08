@@ -1,5 +1,6 @@
+import 'package:enhanced_containers_foundation/item_serializable.dart';
+
 import 'exceptions.dart';
-import 'item_serializable.dart';
 import 'list_provided.dart';
 
 abstract class DatabaseListProvided<T extends ItemSerializable>

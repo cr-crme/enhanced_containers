@@ -16,6 +16,11 @@ dependencies:
     nanoid: ^1.0.0
     firebase_database: ^11.3.1
     firebase_database_mocks: ^0.7.1
+    enhanced_containers_foundation:
+
+dependency_overrides:
+  enhanced_containers_foundation:
+    path: plugins/enhanced_containers_foundation
 
 dev_dependencies:
     flutter_test:

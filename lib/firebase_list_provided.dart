@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:developer' as dev;
 
+import 'package:enhanced_containers_foundation/item_serializable.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 
 import 'database_list_provided.dart';
 import 'exceptions.dart';
-import 'item_serializable.dart';
 import 'list_serializable.dart';
 
 /// A [DatabaseListProvided] that automagically saves all of its into Firebase's
