@@ -1,7 +1,6 @@
 import 'package:enhanced_containers_foundation/item_serializable.dart';
+import 'package:enhanced_containers_foundation/list_serializable.dart';
 import 'package:flutter/foundation.dart';
-
-import 'list_serializable.dart';
 
 /// A [ListSerializable] that implements [ChangeNotifier] to notify every modifications made to its content.
 ///
