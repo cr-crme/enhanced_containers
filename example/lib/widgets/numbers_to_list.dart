@@ -7,9 +7,9 @@ import '../providers/list_of_my_random_item.dart';
 
 class NumbersToList extends StatefulWidget {
   const NumbersToList({
-    Key? key,
+    super.key,
     required this.allowNewNumbers,
-  }) : super(key: key);
+  });
 
   final bool allowNewNumbers;
 
@@ -26,7 +26,8 @@ class _NumbersToListState extends State<NumbersToList> {
     // We get a Provider of the List, so it can be fill as pleased. Notice that
     // the [notifyListeners] is automatically called.
     final itemsAsList = Provider.of<ListOfMyRandomItem>(context, listen: false);
-    itemsAsList.add(MyRandomItem('Not named', double.parse(_controller.text)));
+    itemsAsList.add(MyRandomItem(
+        title: 'Not named', value: double.parse(_controller.text)));
 
     _controller.text = '';
     setState(() {});
@@ -92,12 +93,10 @@ class _NumbersToListState extends State<NumbersToList> {
         'The numbers are:',
         style: Theme.of(context).textTheme.bodyLarge,
       ),
-      ...itemsAsList
-          .map((e) => Text(
-                e.toString(),
-                style: Theme.of(context).textTheme.bodyMedium,
-              ))
-          .toList(),
+      ...itemsAsList.map((e) => Text(
+            e.toString(),
+            style: Theme.of(context).textTheme.bodyMedium,
+          )),
     ];
   }
 }

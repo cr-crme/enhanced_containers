@@ -7,9 +7,9 @@ import '../providers/map_of_my_random_item.dart';
 
 class NumbersToMap extends StatefulWidget {
   const NumbersToMap({
-    Key? key,
+    super.key,
     required this.allowNewNumbers,
-  }) : super(key: key);
+  });
 
   final bool allowNewNumbers;
 
@@ -28,7 +28,7 @@ class _NumbersToMapState extends State<NumbersToMap> {
     // the [notifyListeners] is automatically called
     final itemsAsMap = Provider.of<MapOfMyRandomItem>(context, listen: false);
     itemsAsMap[_counter.toString()] =
-        MyRandomItem('Not named', double.parse(_controller.text));
+        MyRandomItem(title: 'Not named', value: double.parse(_controller.text));
 
     _controller.text = '';
     _counter++;

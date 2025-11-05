@@ -1,7 +1,7 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 class MyRandomItem extends ItemSerializable {
-  MyRandomItem(this.title, this.value);
+  MyRandomItem({required this.title, required this.value});
   final String title;
   final double value;
   @override
@@ -18,7 +18,8 @@ class MyRandomItem extends ItemSerializable {
 
   /// Userfull constructor that constructs the Item from the same map as
   /// constructed by [serializedMap]
-  static MyRandomItem deserialize(Map<String, dynamic> data) {
-    return MyRandomItem(data['title'], data['value']);
+  static MyRandomItem deserialize(Map? data) {
+    return MyRandomItem(
+        title: data?['title'] ?? 'Not named', value: data?['value'] ?? 0);
   }
 }

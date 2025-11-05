@@ -4,8 +4,7 @@ description: This is a basic example on how to use the enhanced_containers packa
 publish_to: 'none' 
 
 environment:
-  sdk: '>=2.18.4 <3.0.0'
-  flutter: '>=3.3.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -20,7 +19,7 @@ dependency_overrides:
     path: ../plugins/enhanced_containers_foundation
 
 dev_dependencies:
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true

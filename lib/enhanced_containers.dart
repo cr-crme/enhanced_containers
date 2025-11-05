@@ -1,5 +1,3 @@
-library enhanced_containers;
-
 // Item Serializable
 export 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
