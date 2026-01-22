@@ -36,6 +36,12 @@ class _NumbersToMapState extends State<NumbersToMap> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // We get a Consumer (or Provider) of the Map, so it can be read as pleased
     return Consumer<MapOfMyRandomItem>(builder: (context, itemsAsMap, _) {

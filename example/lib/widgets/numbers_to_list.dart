@@ -34,6 +34,12 @@ class _NumbersToListState extends State<NumbersToList> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // We get a Consumer (or Provider) of the List, so it can be read as pleased
     return Consumer<ListOfMyRandomItem>(builder: (context, itemsAsList, _) {
