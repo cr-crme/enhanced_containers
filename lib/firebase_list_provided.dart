@@ -50,12 +50,15 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       String id = event.snapshot.key!;
       // Get the new element data
       _dataRef.child(id).get().then((data) {
+        if (data.value is! Map) return;
+
         // Add it to the list and notify
         final value = (data.value as Map).containsKey(data.key)
             ? (data.value as Map)[data.key]!
             : data.value;
 
-        super.add(deserializeItem(value), notify: true);
+        final item = deserializeItem(value);
+        if (item != null) super.add(item, notify: true);
       }).onError((error, stackTrace) {
         dev.log('Error while fetching data from the database: $error',
             error: error, stackTrace: stackTrace);
@@ -69,7 +72,8 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
         map[event.snapshot.key!] = event.snapshot.value;
 
         // Replace the element in the list and notify
-        super.replace(deserializeItem(map), notify: true);
+        final item = deserializeItem(map);
+        if (item != null) super.replace(item, notify: true);
       });
     });
 
