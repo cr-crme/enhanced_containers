@@ -104,8 +104,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       // Check if connexion is still active
       _connectionStateTimer =
           Timer.periodic(const Duration(seconds: 10), (timer) async {
-        print('COUCOU');
-
         late final bool isConnected;
         try {
           final snapshot =
@@ -114,7 +112,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
         } catch (e) {
           isConnected = false;
         }
-        print('Connection status: $isConnected');
 
         if (isConnected != _isConnectionActive) {
           _isConnectionActive = isConnected;
