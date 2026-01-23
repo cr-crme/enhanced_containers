@@ -86,6 +86,9 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
         // Replace the element in the list and notify
         final item = deserializeItem(map);
         if (item != null) super.replace(item, notify: true);
+      }, onError: (error, stackTrace) {
+        dev.log('Error while listening to data changes: $error',
+            error: error, stackTrace: stackTrace);
       });
     });
 
