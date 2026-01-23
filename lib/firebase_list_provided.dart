@@ -15,7 +15,14 @@ import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 abstract class FirebaseListProvided<T extends ItemSerializable>
     extends DatabaseListProvided<T> {
   /// Creates a [FirebaseListProvided] with the specified data path and ids path.
-  FirebaseListProvided({required this.pathToData, this.mockMe = false});
+  /// [onConnectionStateChanged] is an optional callback. If used the user must
+  /// have the right to read the 'isConnected' path in the database, and this
+  /// value must be preset to "true".
+  FirebaseListProvided({
+    required this.pathToData,
+    this.mockMe = false,
+    this.onConnectionStateChanged,
+  });
 
   /// This method should be called after the user has logged on
   @override
@@ -36,9 +43,14 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     super.clear();
 
     _isInitialized = false;
+    _isConnectionActive = false;
+    _connectionStateTimer?.cancel();
   }
 
   bool _isInitialized = false;
+  bool _isConnectionActive = true;
+  final Function(bool isActive)? onConnectionStateChanged;
+  Timer? _connectionStateTimer;
   final bool mockMe;
 
   void _listenToDatabase() {
@@ -85,6 +97,19 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       // Remove the enterprise from the list and notify
       super.remove(event.snapshot.key!, notify: true);
     });
+
+    if (onConnectionStateChanged != null) {
+      // Check if connexion is still active
+      _connectionStateTimer =
+          Timer.periodic(const Duration(seconds: 10), (timer) async {
+        final snapshot = await _isConnectedRef.get();
+        final isConnected = snapshot.value as bool? ?? false;
+        if (isConnected != _isConnectionActive) {
+          _isConnectionActive = isConnected;
+          onConnectionStateChanged!(_isConnectionActive);
+        }
+      });
+    }
   }
 
   void _sanityChecks({required bool isInitialized, required bool notify}) {
@@ -100,6 +125,10 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   void add(T item, {bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
+    if (!_isConnectionActive) {
+      throw Exception(
+          'Cannot add item to the database while the connection is inactive.');
+    }
     try {
       _dataRef.child(item.id).set(item.serialize());
     } on Exception {
@@ -115,6 +144,11 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// Inserts elements in a list of a logged user
   ///
   void insertInList(String pathToItem, ListSerializable items) {
+    if (!_isConnectionActive) {
+      throw Exception(
+          'Cannot add item to the database while the connection is inactive.');
+    }
+
     try {
       for (final item in items) {
         _dataRef.child(pathToItem).child(item.id).set(item.serialize());
@@ -133,6 +167,10 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   Future<void> replace(T item, {bool notify = true}) async {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
+    if (!_isConnectionActive) {
+      throw Exception(
+          'Cannot replace item in the database while the connection is inactive.');
+    }
     try {
       await _dataRef.child(item.id).set(item.serialize());
     } on Exception {
@@ -159,6 +197,11 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   void remove(value, {bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
+    if (!_isConnectionActive) {
+      throw Exception(
+          'Cannot remove item from the database while the connection is inactive.');
+    }
+
     final id = this[value].id;
     _dataRef.child(id).remove();
     _dataSubscriptions[id]?.cancel();
@@ -176,6 +219,12 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   @override
   void clear({bool confirm = false, bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
+
+    if (!_isConnectionActive) {
+      throw Exception(
+          'Cannot clear items from the database while the connection is inactive.');
+    }
+
     if (!confirm) {
       throw const ShouldNotCall(
           'You almost cleared the entire database ! Set the parameter confirm to true if that was really your intention.');
@@ -200,4 +249,5 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
 
   DatabaseReference get _availableIdsRef => firebaseInstance.ref(pathToData);
   DatabaseReference get _dataRef => firebaseInstance.ref(pathToData);
+  DatabaseReference get _isConnectedRef => firebaseInstance.ref('isConnected');
 }
