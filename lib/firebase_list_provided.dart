@@ -43,12 +43,12 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     super.clear();
 
     _isInitialized = false;
-    _isConnectionActive = false;
+    _isConnectionActive = null;
     _connectionStateTimer?.cancel();
   }
 
   bool _isInitialized = false;
-  bool _isConnectionActive = true;
+  bool? _isConnectionActive;
   final Function(bool isActive)? onConnectionStateChanged;
   Timer? _connectionStateTimer;
   final bool mockMe;
@@ -99,14 +99,26 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     });
 
     if (onConnectionStateChanged != null) {
+      _isConnectionActive = true;
+      onConnectionStateChanged!(_isConnectionActive!);
       // Check if connexion is still active
       _connectionStateTimer =
           Timer.periodic(const Duration(seconds: 10), (timer) async {
-        final snapshot = await _isConnectedRef.get();
-        final isConnected = snapshot.value as bool? ?? false;
+        print('COUCOU');
+
+        late final bool isConnected;
+        try {
+          final snapshot =
+              await _isConnectedRef.get().timeout(const Duration(seconds: 1));
+          isConnected = snapshot.value as bool? ?? false;
+        } catch (e) {
+          isConnected = false;
+        }
+        print('Connection status: $isConnected');
+
         if (isConnected != _isConnectionActive) {
           _isConnectionActive = isConnected;
-          onConnectionStateChanged!(_isConnectionActive);
+          onConnectionStateChanged!(_isConnectionActive!);
         }
       });
     }
@@ -125,10 +137,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   void add(T item, {bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
-    if (!_isConnectionActive) {
-      throw Exception(
-          'Cannot add item to the database while the connection is inactive.');
-    }
     try {
       _dataRef.child(item.id).set(item.serialize());
     } on Exception {
@@ -144,11 +152,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   /// Inserts elements in a list of a logged user
   ///
   void insertInList(String pathToItem, ListSerializable items) {
-    if (!_isConnectionActive) {
-      throw Exception(
-          'Cannot add item to the database while the connection is inactive.');
-    }
-
     try {
       for (final item in items) {
         _dataRef.child(pathToItem).child(item.id).set(item.serialize());
@@ -167,10 +170,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   Future<void> replace(T item, {bool notify = true}) async {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
-    if (!_isConnectionActive) {
-      throw Exception(
-          'Cannot replace item in the database while the connection is inactive.');
-    }
     try {
       await _dataRef.child(item.id).set(item.serialize());
     } on Exception {
@@ -197,11 +196,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   void remove(value, {bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
 
-    if (!_isConnectionActive) {
-      throw Exception(
-          'Cannot remove item from the database while the connection is inactive.');
-    }
-
     final id = this[value].id;
     _dataRef.child(id).remove();
     _dataSubscriptions[id]?.cancel();
@@ -219,11 +213,6 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
   @override
   void clear({bool confirm = false, bool notify = true}) {
     _sanityChecks(isInitialized: _isInitialized, notify: notify);
-
-    if (!_isConnectionActive) {
-      throw Exception(
-          'Cannot clear items from the database while the connection is inactive.');
-    }
 
     if (!confirm) {
       throw const ShouldNotCall(
