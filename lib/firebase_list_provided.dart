@@ -62,7 +62,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
       String id = event.snapshot.key!;
       // Get the new element data
       _dataRef.child(id).get().then((data) {
-        if (data.value is! Map) return;
+        if (data.value is! Map || data.key == 'id') return;
 
         // Add it to the list and notify
         final value = (data.value as Map).containsKey(data.key)
