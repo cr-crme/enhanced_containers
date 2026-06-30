@@ -7,6 +7,9 @@ import 'package:flutter/foundation.dart';
 /// Written by: @pariterre and @Guibi1
 abstract class ListProvided<T extends ItemSerializable>
     extends ListSerializable<T> with ChangeNotifier {
+  bool _isDisposed = false;
+  bool get isDisposed => _isDisposed;
+
   /// Creates an empty [ListProvided].
   ListProvided();
 
@@ -57,4 +60,17 @@ abstract class ListProvided<T extends ItemSerializable>
 
   /// If for some reason one needs to call notifier, they can call [forceNotify]
   void forceNotify() => notifyListeners();
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_isDisposed) {
+      super.notifyListeners();
+    }
+  }
 }
