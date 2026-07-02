@@ -5,7 +5,7 @@ import '../models/my_random_item.dart';
 class FirebaseListOfMyRandomItem extends FirebaseListProvided<MyRandomItem> {
   /// This examples shows how ot implement a [FirebaseListProvided] of some
   /// [ItemSerializable] ([MyRandomItem] in the current case).
-  /// Important note: The [FirebaseListProvided] assumes that the connexion
+  /// Important note: The [FirebaseListProvided] assumes that the connection
   /// with Firebase is already established.
   ///
 

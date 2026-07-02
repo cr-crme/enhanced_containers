@@ -104,7 +104,7 @@ abstract class FirebaseListProvided<T extends ItemSerializable>
     if (onConnectionStateChanged != null) {
       _isConnectionActive = true;
       onConnectionStateChanged!(_isConnectionActive!);
-      // Check if connexion is still active
+      // Check if connection is still active
       _connectionStateTimer =
           Timer.periodic(const Duration(seconds: 10), (timer) async {
         late final bool isConnected;
