@@ -12,8 +12,6 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
-    provider: ^6.1.5
-    nanoid: ^1.0.0
     firebase_database: ^12.0.4
     firebase_database_mocks: ^0.8.1
     enhanced_containers_foundation:
@@ -23,6 +21,4 @@ dependency_overrides:
     path: plugins/enhanced_containers_foundation
 
 dev_dependencies:
-    flutter_test:
-        sdk: flutter
     flutter_lints: ^6.0.0
